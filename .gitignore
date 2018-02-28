@@ -3,6 +3,6 @@
 /bin
 /blender
 /cmake-build-debug
-/doc/html
+/docs/html
 
 run.sh
