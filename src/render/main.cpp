@@ -3,8 +3,6 @@
 #include "window_mock.h"
 #include "render.h"
 
-#include "GLFW/glfw3.h"
-
 
 int main()
 {
@@ -15,8 +13,10 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
+    // Dependecy inversion here -- combine
+
     Render dummy(window);
-    dummy.load_shader("../resources/shaders/vertex.glsl", "../resources/shaders/fragment.glsl");
+    dummy.set_shader("../resources/shaders/vertex.glsl", "../resources/shaders/fragment.glsl");
     dummy.load_puppet("/home/head/Development/FaceRig/resources/puppets/nanosuit/nanosuit.obj");
     dummy.run();
 

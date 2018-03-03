@@ -5,23 +5,31 @@
 #include "GLFW/glfw3.h"
 
 #include <map>
+#include <memory>
+#include <vector>
 
-#include "model.h"
 #include "shader.h"
+#include "model.h"
+#include "camera.h"
 
 
 class Render {
 public:
     explicit Render(GLFWwindow* window) : m_window(window) {};
-    void load_shader(std::string vertex_source_path, std::string fragment_source_path);
+
+    void set_shader(std::string vertex_source_path, std::string fragment_source_path);
+    void set_camera();
     void load_scene(std::string path);
     void load_puppet(std::string path);
+
     void run();
+
 private:
     GLFWwindow* m_window;
-    Shader      m_shader;
-    Model       m_scene;
-    Model       m_puppet;
+    std::unique_ptr<Shader> m_shader;
+    std::unique_ptr<Camera> m_camera;
+    std::unique_ptr<Model>  m_scene;
+    std::unique_ptr<Model>  m_puppet;
 };
 
 

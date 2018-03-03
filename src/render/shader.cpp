@@ -1,11 +1,13 @@
 #include "shader.h"
 
+#include <utility>
+
 
 Shader::Shader(std::string vertex_source_path, std::string fragment_source_path)
 {
     std::string vertex_code, fragment_code;
     copy_file_content(vertex_source_path, vertex_code);
-    copy_file_content(fragment_source_path, fragment_code);
+    copy_file_content(std::move(fragment_source_path), fragment_code);
     const char* vertex_c_code = vertex_code.c_str();
     const char* fragment_c_code = fragment_code.c_str();
 
