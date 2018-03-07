@@ -2,7 +2,7 @@
 
 /bin
 /blender
-/cmake-build-debug
+/cmake-build-debug/*
 /docs/html
 
 run.sh

@@ -6,14 +6,14 @@
 
 int main()
 {
+    std::cout << "Render render..." << std::endl;
+
     int screen_width = 800;
     int screen_height = 600;
 
     GLFWwindow* window = create_context_window(screen_width, screen_height);
 
     glEnable(GL_DEPTH_TEST);
-
-    // Dependecy inversion here -- combine
 
     Render dummy(window);
     dummy.set_shader("../resources/shaders/vertex.glsl", "../resources/shaders/fragment.glsl");
