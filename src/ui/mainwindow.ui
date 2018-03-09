@@ -30,16 +30,9 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="cam_colormode_btn">
-      <property name="text">
-       <string>Change color mode</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QLabel" name="display">
       <property name="text">
-       <string>TextLabel</string>
+       <string/>
       </property>
      </widget>
     </item>

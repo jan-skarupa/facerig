@@ -1,11 +1,7 @@
 #include <iostream>
 
-// #include "camera.h"
-
 int main(int argc, char* argv[])
 {
-    // Camera cam;
-    // cam.run();
-
+    std::cout << "Hello, World!" << std::endl;
     return 0;
 }

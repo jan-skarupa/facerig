@@ -4,9 +4,9 @@
 
 #include <glm/vec3.hpp>
 
-class Camera {
+class InputHandler {
 public:
-    Camera(const glm::vec3 &m_position, const glm::vec3 &m_target, float m_FOV, float m_min_dist, float m_max_dist);
+    InputHandler(const glm::vec3 &m_position, const glm::vec3 &m_target, float m_FOV, float m_min_dist, float m_max_dist);
 
     void set_position(glm::vec3 position);
     void set_target(glm::vec3 target);

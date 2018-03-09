@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../camera/camera.h"
+#include "../input_handler/input_handler.h"
+#include "../input_handler/input_stream.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,8 +18,8 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-    Camera* cam;
+    Ui::MainWindow* ui;
+    InputHandler*   in_handler;
 
 private slots:
 };

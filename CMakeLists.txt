@@ -14,9 +14,9 @@ add_executable(RenderTest src/render/main.cpp)
 target_link_libraries(RenderTest Render)
 set_target_properties(RenderTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
-add_subdirectory(src/camera)
+add_subdirectory(src/input_handler)
 
-add_executable(CameraTest src/camera/main.cpp)
+add_executable(CameraTest src/input_handler/main.cpp)
 target_link_libraries(CameraTest Camera)
 set_target_properties(CameraTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 

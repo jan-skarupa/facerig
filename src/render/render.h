@@ -27,7 +27,7 @@ public:
 private:
     GLFWwindow* m_window;
     std::unique_ptr<Shader> m_shader;
-    std::unique_ptr<Camera> m_camera;
+    std::unique_ptr<InputHandler> m_camera;
     std::unique_ptr<Model>  m_scene;
     std::unique_ptr<Model>  m_puppet;
 };
