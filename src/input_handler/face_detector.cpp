@@ -24,7 +24,7 @@ cv::Rect FaceDetectorHarr::detect_face(const cv::Mat &frame)
     face_classifier.detectMultiScale(frame, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE | CV_HAAR_FIND_BIGGEST_OBJECT, cv::Size(150, 150));
 
     if (faces.empty()) {
-        return cv::Rect();
+        return cv::Rect(0,0,0,0);
     }
     return faces[0];
 }

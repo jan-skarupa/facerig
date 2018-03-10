@@ -5,6 +5,7 @@
 #include "../input_handler/input_handler.h"
 #include "../input_handler/input_stream.h"
 #include "../input_handler/face_detector.h"
+#include "../input_handler/landmark_detector.h"
 
 namespace Ui {
 class MainWindow;

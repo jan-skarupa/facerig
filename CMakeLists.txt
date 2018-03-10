@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.5)
 project(FaceRig)
 
-
 # Download (upadte) dlib source files. Set include directories.
+set(DLIB_DIR ${CMAKE_SOURCE_DIR}/3dparty/dlib)
+
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/3dparty/dlib)
     find_package(Git REQUIRED)
-    set(DLIB_DIR ${CMAKE_SOURCE_DIR}/3dparty/dlib)
     execute_process(COMMAND ${GIT_EXECUTABLE} init WORKING_DIRECTORY "${DLIB_DIR}")
     execute_process(COMMAND ${GIT_EXECUTABLE} remote add -f origin https://github.com/davisking/dlib WORKING_DIRECTORY "${DLIB_DIR}")
     execute_process(COMMAND ${GIT_EXECUTABLE} config core.sparseCheckout true WORKING_DIRECTORY "${DLIB_DIR}")
@@ -14,6 +14,7 @@ if(NOT EXISTS ${CMAKE_SOURCE_DIR}/3dparty/dlib)
 endif()
 
 include_directories(${DLIB_DIR})
+add_subdirectory(${DLIB_DIR}/dlib)
 
 
 set(CMAKE_PREFIX_PATH /home/head/Qt/5.10.0/gcc_64)
@@ -32,11 +33,11 @@ set_target_properties(RenderTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SO
 add_subdirectory(src/input_handler)
 
 add_executable(CameraTest src/input_handler/main.cpp)
-target_link_libraries(CameraTest Camera)
+target_link_libraries(CameraTest Camera dlib::dlib)
 set_target_properties(CameraTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 add_subdirectory(src/ui)
 
 add_executable(FaceRig src/main.cpp)
-target_link_libraries(FaceRig UI Camera)
+target_link_libraries(FaceRig UI Camera dlib::dlib)
 set_target_properties(FaceRig PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
