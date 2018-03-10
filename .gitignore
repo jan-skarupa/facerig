@@ -4,6 +4,7 @@
 /blender
 /cmake-build-debug/*
 /docs/html
+/3dparty/*
 
-run.sh
+run
 facerig.pro.user

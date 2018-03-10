@@ -1,6 +1,21 @@
 cmake_minimum_required(VERSION 3.5)
 project(FaceRig)
 
+
+# Download (upadte) dlib source files. Set include directories.
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/3dparty/dlib)
+    find_package(Git REQUIRED)
+    set(DLIB_DIR ${CMAKE_SOURCE_DIR}/3dparty/dlib)
+    execute_process(COMMAND ${GIT_EXECUTABLE} init WORKING_DIRECTORY "${DLIB_DIR}")
+    execute_process(COMMAND ${GIT_EXECUTABLE} remote add -f origin https://github.com/davisking/dlib WORKING_DIRECTORY "${DLIB_DIR}")
+    execute_process(COMMAND ${GIT_EXECUTABLE} config core.sparseCheckout true WORKING_DIRECTORY "${DLIB_DIR}")
+    file(WRITE ${DLIB_DIR}/.git/info/sparse-checkout "dlib")
+    execute_process(COMMAND git pull origin master WORKING_DIRECTORY "${DLIB_DIR}")
+endif()
+
+include_directories(${DLIB_DIR})
+
+
 set(CMAKE_PREFIX_PATH /home/head/Qt/5.10.0/gcc_64)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
