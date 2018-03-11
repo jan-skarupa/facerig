@@ -1,14 +1,5 @@
 #include "qt_mediator.h"
 
-void QtMediator::open_stream()
-{
-    input_pipeline.lock()->open_stream();
-}
-
-void QtMediator::close_stream()
-{
-    input_pipeline.lock()->close_stream();
-}
 
 void QtMediator::run_pipeline()
 {

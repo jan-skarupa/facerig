@@ -24,20 +24,20 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 14)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-add_subdirectory(src/render)
 
+add_subdirectory(src/render)
 add_executable(RenderTest src/render/main.cpp)
 target_link_libraries(RenderTest Render)
 set_target_properties(RenderTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 add_subdirectory(src/input_pipeline)
-
-add_executable(CameraTest src/input_pipeline/main.cpp)
-target_link_libraries(CameraTest Camera dlib::dlib)
+set(MEDLOC src/input_pipeline/mediators)
+file(GLOB MEDIATORS ${MEDLOC}/pipeline_ui_mediator.h ${MEDLOC}/mock_mediator.h ${MEDLOC}/mock_mediator.cpp)
+add_executable(CameraTest src/input_pipeline/main.cpp ${MEDIATORS})
+target_link_libraries(CameraTest InputPipeline)
 set_target_properties(CameraTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 add_subdirectory(src/ui)
-
 add_executable(FaceRig src/main.cpp)
-target_link_libraries(FaceRig UI Camera dlib::dlib)
+target_link_libraries(FaceRig UI InputPipeline)
 set_target_properties(FaceRig PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")

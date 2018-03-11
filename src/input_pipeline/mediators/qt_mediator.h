@@ -16,8 +16,6 @@ public:
     explicit QtMediator(std::shared_ptr<InputPipeline> pipeline, QLabel* canvas)
             : PipelineUiMediator(pipeline), canvas(canvas) {};
 
-    void open_stream() override;
-    void close_stream() override;
     void render_pipeline_output() override;
 
 public slots:

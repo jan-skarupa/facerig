@@ -11,8 +11,12 @@ public:
         input_pipeline = input_pipeline_ptr;
     };
 
-    virtual void open_stream() = 0;
-    virtual void close_stream() = 0;
+    virtual void open_stream() final {
+        input_pipeline.lock()->open_stream();
+    };
+    virtual void close_stream() final {
+        input_pipeline.lock()->close_stream();
+    };
     virtual void run_pipeline() = 0;
     virtual void render_pipeline_output() = 0;
 

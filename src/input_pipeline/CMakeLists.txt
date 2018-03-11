@@ -1,9 +1,8 @@
 find_package(OpenCV REQUIRED)
-find_package(Qt5Widgets)
 
-file(GLOB SRC *.cpp *.h analyzers/*.cpp analyzers/*.h mediators/*.cpp mediators/*.h)
-get_filename_component(CAMERA_ENTRYPOINT main.cpp ABSOLUTE)
-list(REMOVE_ITEM SRC ${CAMERA_ENTRYPOINT})
+file(GLOB SOURCE_FILES *.cpp *.h analyzers/*.cpp analyzers/*.h)
+get_filename_component(MAIN main.cpp ABSOLUTE)
+list(REMOVE_ITEM SOURCE_FILES ${MAIN})
 
-add_library(Camera ${SRC})
-target_link_libraries(Camera Qt5::Widgets ${OpenCV_LIBS})
+add_library(InputPipeline ${SOURCE_FILES})
+target_link_libraries(InputPipeline ${OpenCV_LIBS} dlib::dlib)
