@@ -2,10 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../input_handler/input_handler.h"
-#include "../input_handler/input_stream.h"
-#include "../input_handler/face_detector.h"
-#include "../input_handler/landmark_detector.h"
+#include <QLabel>
+#include "pipeline_runner.h"
+#include "../input_pipeline/pipeline.h"
+#include "../input_pipeline/mediators/qt_mediator.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -21,7 +22,9 @@ public:
 
 private:
     Ui::MainWindow* ui;
-    InputHandler*   in_handler;
+    std::unique_ptr<InputRunner> input_runner;
+    std::shared_ptr<InputPipeline> input_pipeline;
+    std::shared_ptr<QtMediator> input_qt_mediator;
 
 private slots:
 };
