@@ -3,8 +3,9 @@
 
 #include "opencv2/opencv.hpp"
 #include "input_source.h"
-#include "../input_pipeline/analyzers/face_detector.h"
-#include "../input_pipeline/analyzers/landmark_detector.h"
+#include "analyzers/face_detector.h"
+#include "analyzers/landmark_detector.h"
+#include "analyzers/feature_detector.h"
 
 
 class InputPipeline
@@ -24,6 +25,7 @@ private:
     std::unique_ptr<InputSource> in_stream;
     std::unique_ptr<FaceDetector> face_detector;
     std::unique_ptr<LandmarkDetector> landmark_detector;
+    FeatureDetector feature_detector;
 };
 
 

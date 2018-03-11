@@ -1,6 +1,14 @@
 #include "pipeline.h"
 
 
+struct Image {
+    cv::Mat frame;
+    std::unique_ptr<cv::Rect> face;
+    std::array<cv::Point, 68> landmarks;
+    cv::Mat head_rotation;
+};
+
+
 InputPipeline::InputPipeline(std::unique_ptr<InputSource> input_stream,
                              std::unique_ptr<FaceDetector> face_detector,
                              std::unique_ptr<LandmarkDetector> landmark_detector)
@@ -12,17 +20,21 @@ InputPipeline::InputPipeline(std::unique_ptr<InputSource> input_stream,
 
 void InputPipeline::run_pipeline()
 {
-    frame = in_stream->get_image();
-    cv::Rect face = face_detector->detect_face(frame);
+    Image image;
+    image.frame = in_stream->get_image();
+    image.face = face_detector->detect_face(image.frame);
 
-    if (face.area()) {
-        std::array<cv::Point, 68> landmarks = landmark_detector->detect_landmarks(frame, face);
+    if (image.face != nullptr) {
+        image.landmarks = landmark_detector->detect_landmarks(image.frame, *image.face);
+        image.head_rotation = feature_detector.detect_face_direction(image.landmarks);
 
-        for (const auto &landmark : landmarks) {
-            cv::circle(frame, landmark, 1, cv::Scalar(255,0,0), -1);
+        cv::rectangle(image.frame, *image.face, cv::Scalar(0,0,0));
+        for (const auto &mark : image.landmarks) {
+            cv::circle(image.frame, mark, 1, cv::Scalar(255,0,0), -1);
         }
     }
-    cv::rectangle(frame, face, cv::Scalar(0,0,255));
+
+    std::swap(image.frame, frame);
 }
 
 void InputPipeline::open_stream()

@@ -6,7 +6,7 @@
 
 
 struct FaceDetector {
-    virtual cv::Rect detect_face(const cv::Mat& image) = 0;
+    virtual std::unique_ptr<cv::Rect> detect_face(const cv::Mat& image) = 0;
 };
 
 

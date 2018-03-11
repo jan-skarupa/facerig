@@ -29,6 +29,8 @@ cv::Mat Camera::get_image()
     cv::Mat frame;
     *camera_stream >> frame;
     cv::flip(frame, frame, 1);
+    // cvtColor(frame, frame, CV_BGR2GRAY );
+    // cv::equalizeHist(frame, frame);
 
     return frame;
 }
