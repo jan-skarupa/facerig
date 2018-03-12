@@ -6,7 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "shader.h"
+#include "../shader/shader.h"
+
 
 struct Vertex {
     glm::vec3 Position;

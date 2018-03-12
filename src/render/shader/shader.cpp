@@ -1,23 +1,17 @@
 #include "shader.h"
 
-#include <utility>
-
-
-Shader::Shader(std::string vertex_source_path, std::string fragment_source_path)
+Shader::Shader()
 {
-    std::string vertex_code, fragment_code;
-    copy_file_content(vertex_source_path, vertex_code);
-    copy_file_content(std::move(fragment_source_path), fragment_code);
-    const char* vertex_c_code = vertex_code.c_str();
-    const char* fragment_c_code = fragment_code.c_str();
+    extern const char* vertex_literal;
+    extern const char* fragment_literal;
 
     unsigned int vertexShader, fragmentShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertex_c_code, nullptr);
+    glShaderSource(vertexShader, 1, &vertex_literal, nullptr);
     glCompileShader(vertexShader);
 
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragment_c_code, nullptr);
+    glShaderSource(fragmentShader, 1, &fragment_literal, nullptr);
     glCompileShader(fragmentShader);
 
     if ( !(shader_compiled(vertexShader) && shader_compiled(fragmentShader)) ) {
@@ -41,29 +35,6 @@ void Shader::use()
 {
     glUseProgram(ID);
 }
-
-bool Shader::copy_file_content(std::string path, std::string &content)
-{
-    std::ifstream file;
-    std::stringstream ss;
-    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-    try
-    {
-        file.open(path);
-        ss << file.rdbuf();
-        file.close();
-        content = ss.str();
-    }
-    catch(std::ifstream::failure &e)
-    {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
-        return false;
-    }
-
-    return true;
-}
-
 
 bool Shader::shader_compiled(const unsigned int &shader)
 {

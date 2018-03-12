@@ -8,9 +8,10 @@
 #include <memory>
 #include <vector>
 
-#include "shader.h"
-#include "model.h"
-#include "camera.h"
+#include "model/model.h"
+#include "shader/shader.h"
+#include "camera/camera.h"
+
 
 struct WindowSize {
     WindowSize(int width, int height) : width(width), height(height) {};
@@ -40,7 +41,6 @@ public:
     Render() {};
     static std::unique_ptr<Render> make_default_render();
 
-    void set_shader(std::string vertex_source_path, std::string fragment_source_path);
     void set_puppet(std::string path);
     // void set_scene(std::string path);
 
@@ -55,7 +55,7 @@ private:
     glm::mat4 projection;
     Light light;
 
-    std::unique_ptr<Shader> m_shader;
+    Shader shader;
     std::unique_ptr<Model>  m_puppet;
     // std::unique_ptr<Model>  m_scene;
 };

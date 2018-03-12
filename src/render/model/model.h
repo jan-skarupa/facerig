@@ -10,7 +10,8 @@
 #include "stb_image.h"
 
 #include "mesh.h"
-#include "shader.h"
+#include "../shader/shader.h"
+
 
 class Model {
 public:

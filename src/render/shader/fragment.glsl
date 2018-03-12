@@ -1,5 +1,4 @@
 #version 330 core
-
 in vec3 fragment_pos;
 in vec3 normal;
 in vec2 texture_coord;

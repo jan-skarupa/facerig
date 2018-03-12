@@ -6,24 +6,19 @@
 
 void Render::render_scene()
 {
-    m_shader->use();
-    m_shader->set_uniform("view", view);
-    m_shader->set_uniform("projection", projection);
+    shader.use();
+    shader.set_uniform("view", view);
+    shader.set_uniform("projection", projection);
 
-    m_shader->set_uniform("light.position", light.position);
-    m_shader->set_uniform("light.color", light.color);
+    shader.set_uniform("light.position", light.position);
+    shader.set_uniform("light.color", light.color);
 
     glm::mat4 model;
     model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
     model = glm::rotate(model, 1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
-    m_shader->set_uniform("model", model);
+    shader.set_uniform("model", model);
 
-    m_puppet->draw(*m_shader);
-}
-
-void Render::set_shader(std::string vertex_source_path, std::string fragment_source_path)
-{
-    m_shader = std::make_unique<Shader>(vertex_source_path, fragment_source_path);
+    m_puppet->draw(shader);
 }
 
 void Render::set_puppet(std::string path)
@@ -60,7 +55,6 @@ std::unique_ptr<Render> Render::make_default_render()
     Light light(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     render->set_light(light);
 
-    render->set_shader("../resources/shaders/vertex.glsl", "../resources/shaders/fragment.glsl");
     render->set_puppet("/home/head/Development/FaceRig/resources/puppets/head/head.obj");
 
     return std::move(render);

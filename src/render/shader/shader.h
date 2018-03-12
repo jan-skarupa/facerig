@@ -9,10 +9,10 @@
 #include <sstream>
 #include <iostream>
 
+
 class Shader {
 public:
-    Shader() {};
-    Shader(std::string vertexSource, std::string fragmentSource);
+    Shader();
 
     void use();
     void set_uniform(const std::string &name, int value) const;
@@ -22,7 +22,6 @@ public:
 
 private:
     unsigned int ID;
-    bool copy_file_content(std::string path, std::string &content);
     bool shader_compiled(const unsigned int &shader);
     bool program_linked(const unsigned int &program);
 };

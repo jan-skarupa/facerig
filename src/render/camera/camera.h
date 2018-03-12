@@ -1,8 +1,8 @@
 #ifndef FACERIG_CAMERA_H
 #define FACERIG_CAMERA_H
 
-
 #include <glm/vec3.hpp>
+
 
 class InputPipeline {
 public:
