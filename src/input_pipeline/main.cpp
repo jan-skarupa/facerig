@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "pipeline.h"
-#include "mediators/mock_mediator.h"
+#include "../mediators/mock_mediator.h"
 
 int main(int argc, char* argv[])
 {

@@ -31,7 +31,7 @@ target_link_libraries(RenderTest Render)
 set_target_properties(RenderTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 add_subdirectory(src/input_pipeline)
-set(MEDLOC src/input_pipeline/mediators)
+set(MEDLOC src/mediators)
 file(GLOB MEDIATORS ${MEDLOC}/pipeline_ui_mediator.h ${MEDLOC}/mock_mediator.h ${MEDLOC}/mock_mediator.cpp)
 add_executable(CameraTest src/input_pipeline/main.cpp ${MEDIATORS})
 target_link_libraries(CameraTest InputPipeline)

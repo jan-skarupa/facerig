@@ -5,7 +5,7 @@
 #include <QLabel>
 #include "pipeline_runner.h"
 #include "../input_pipeline/pipeline.h"
-#include "../input_pipeline/mediators/qt_mediator.h"
+#include "../mediators/pipeline_qt_mediator.h"
 
 
 namespace Ui {

@@ -5,8 +5,7 @@
 
 #include <QObject>
 #include <QTimer>
-#include "../input_pipeline/mediators/pipeline_ui_mediator.h"
-#include "../input_pipeline/mediators/qt_mediator.h"
+#include "../mediators/pipeline_qt_mediator.h"
 
 
 class InputRunner : public QObject

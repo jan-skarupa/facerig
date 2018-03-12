@@ -1,4 +1,4 @@
-#include "qt_mediator.h"
+#include "pipeline_qt_mediator.h"
 
 
 void QtMediator::run_pipeline()

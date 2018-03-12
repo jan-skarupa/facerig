@@ -17,7 +17,7 @@ int main()
 
     Render dummy(window);
     dummy.set_shader("../resources/shaders/vertex.glsl", "../resources/shaders/fragment.glsl");
-    dummy.load_puppet("/home/head/Development/FaceRig/resources/puppets/nanosuit/nanosuit.obj");
+    dummy.load_puppet("/home/head/Development/FaceRig/resources/puppets/head/head.obj");
     dummy.run();
 
     glfwTerminate();

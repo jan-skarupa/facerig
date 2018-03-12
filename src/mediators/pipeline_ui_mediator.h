@@ -3,7 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <memory>
-#include "../pipeline.h"
+#include "src/input_pipeline/pipeline.h"
 
 class PipelineUiMediator {
 public:
