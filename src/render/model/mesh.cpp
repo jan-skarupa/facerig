@@ -2,8 +2,9 @@
 
 #include <utility>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
-        : m_vertices(std::move(vertices)), m_indices(std::move(indices)), m_textures(std::move(textures))
+Mesh::Mesh(std::string name, std::vector<Vertex> vertices, std::vector<unsigned int> indices,
+           std::vector<unsigned int> texture_ids)
+        : name(std::move(name)), vertices(std::move(vertices)), indices(std::move(indices)), texture_ids(std::move(texture_ids))
 {
     setup_mesh();
 }
@@ -16,10 +17,10 @@ void Mesh::setup_mesh()
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
     // vertex positions
     glEnableVertexAttribArray(0);
@@ -36,29 +37,15 @@ void Mesh::setup_mesh()
     glBindVertexArray(0);
 }
 
-void Mesh::draw(Shader shader)
+void Mesh::draw() const
 {
-    // Bind m_textures to shader
-    unsigned int diffuseNr = 1;
-    unsigned int specularNr = 1;
-    for(unsigned int i = 0; i < m_textures.size(); i++)
-    {
-        glActiveTexture(GL_TEXTURE0 + i);
-        std::string number;
-        std::string name = m_textures[i].type;
-        if(name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
-        else if(name == "texture_specular")
-            number = std::to_string(specularNr++);
-
-        shader.set_uniform("material." + name + number, (int)i);
-        glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
-    }
-    glActiveTexture(GL_TEXTURE0);
-
-    // draw mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+}
+
+const std::vector<unsigned int> &Mesh::get_used_textures() const
+{
+    return texture_ids;
 }
 

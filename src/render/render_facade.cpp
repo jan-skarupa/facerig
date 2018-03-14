@@ -13,6 +13,57 @@ RenderFacade::RenderFacade(ContextType type, WindowSize window_size)
     }
 }
 
+RenderFacade::~RenderFacade()
+{
+    glfwTerminate();
+}
+
+
+void RenderFacade::set_puppet(std::string object_path)
+{
+    puppet_id = render->add_model(object_path);
+}
+
+/*
+void RenderFacade::set_puppet_pose(Features features)
+{
+    glm::mat4 matrix;
+    float factor = features.head.rotation.horizontal;
+    matrix = glm::rotate(matrix, factor, glm::vec3(0.0f, 1.0f, 0.0f));
+
+    matrix = glm::scale(matrix, glm::vec3(0.1f, 0.1f, 0.1f));
+    // render->set_object_transformation(puppet_id, "Cube_Cube.001", matrix);
+}
+ */
+
+void RenderFacade::render_scene()
+{
+    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Features features;
+    // features.head.rotation.horizontal = 1.2;
+    // set_puppet_pose(features);
+
+    render->render_scene();
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+
+void RenderFacade::run_glfw_render()
+{
+    render->init_scene();
+
+    while(!glfwWindowShouldClose(window))
+    {
+        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        render_scene();
+    }
+}
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
@@ -42,32 +93,4 @@ GLFWwindow* RenderFacade::create_glfw_context_window(const WindowSize& window_si
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     return window;
-}
-
-RenderFacade::~RenderFacade()
-{
-    glfwTerminate();
-}
-
-
-void RenderFacade::render_scene()
-{
-    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    render->render_scene();
-
-    glfwSwapBuffers(window);
-    glfwPollEvents();
-}
-
-void RenderFacade::run_render()
-{
-    while(!glfwWindowShouldClose(window))
-    {
-        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, true);
-
-        render_scene();
-    }
 }

@@ -11,13 +11,14 @@ struct Light {
 };
 
 uniform Light light;
+uniform sampler2D texture_diffuse1;
 
 void main()
 {
 	vec3  norm = normalize(normal);
     vec3  light_dir = normalize(light.position - fragment_pos);
     float angle = max(dot(norm, light_dir), 0.0);
-    vec3  diffuse = light.color * angle;
+    vec3  diffuse = light.color * angle * texture(texture_diffuse1, texture_coord).rgb;
 
     Frag_color = vec4(diffuse * vec3(0.5, 0.5, 0.5), 1.0);
 }

@@ -41,23 +41,21 @@ public:
     Render() {};
     static std::unique_ptr<Render> make_default_render();
 
-    void set_puppet(std::string path);
-    // void set_scene(std::string path);
-
+    int  add_model(std::string object_path);
     void set_light(const Light& light);
-    void set_view(const glm::mat4 &view);
-    void set_projection(const glm::mat4 &projection);
-
+    void set_camera(const Camera camera);
+    void init_scene();
     void render_scene();
 
 private:
+    void bind_mesh_textures(const std::vector<Texture> &textures, const std::vector<unsigned int> &used_textures);
+
     glm::mat4 view;
     glm::mat4 projection;
     Light light;
 
     Shader shader;
-    std::unique_ptr<Model>  m_puppet;
-    // std::unique_ptr<Model>  m_scene;
+    std::vector<std::unique_ptr<Model>> models;
 };
 
 

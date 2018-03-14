@@ -4,7 +4,44 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+void Render::bind_mesh_textures(const std::vector<Texture> &textures, const std::vector<unsigned int> &used_textures)
+{
+    unsigned int diffuseNr = 1;
+    unsigned int specularNr = 1;
+    for(unsigned int i = 0; i < used_textures.size(); i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + i);
+        std::string number;
+        std::string name = textures[used_textures[i]].type;
+        if(name == "texture_diffuse")
+            number = std::to_string(diffuseNr++);
+        else if(name == "texture_specular")
+            number = std::to_string(specularNr++);
+
+        shader.set_uniform("material." + name + number, (int)i);
+        glBindTexture(GL_TEXTURE_2D, textures[used_textures[i]].id);
+    }
+    glActiveTexture(GL_TEXTURE0);
+}
+
 void Render::render_scene()
+{
+    glm::mat4 transform;
+    transform = glm::scale(transform, glm::vec3(0.1f, 0.1f, 0.1f));
+    transform = glm::rotate(transform, 1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
+    shader.set_uniform("model", transform);
+
+    for (auto &model : models)
+    {
+        for (auto &mesh : model->get_meshes())
+        {
+            bind_mesh_textures(model->get_textures(), mesh.get_used_textures());
+            mesh.draw();
+        }
+    }
+}
+
+void Render::init_scene()
 {
     shader.use();
     shader.set_uniform("view", view);
@@ -12,18 +49,12 @@ void Render::render_scene()
 
     shader.set_uniform("light.position", light.position);
     shader.set_uniform("light.color", light.color);
-
-    glm::mat4 model;
-    model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-    model = glm::rotate(model, 1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
-    shader.set_uniform("model", model);
-
-    m_puppet->draw(shader);
 }
 
-void Render::set_puppet(std::string path)
+int Render::add_model(std::string object_path)
 {
-    m_puppet = std::make_unique<Model>(path);
+    models.push_back(std::make_unique<Model>(object_path));
+    return (int)models.size();
 }
 
 void Render::set_light(const Light& light)
@@ -31,31 +62,22 @@ void Render::set_light(const Light& light)
     Render::light = light;
 }
 
-void Render::set_view(const glm::mat4 &view)
+void Render::set_camera(const Camera camera)
 {
-    Render::view = view;
-}
+    glm::mat4 view = glm::lookAt(camera.position, camera.target, glm::vec3(0.0, 1.0, 0.0));
+    this->view = view;
 
-void Render::set_projection(const glm::mat4 &projection)
-{
-    Render::projection = projection;
+    float aspect = (float)camera.window_size.width / (float)camera.window_size.height;
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
+    this->projection = projection;
 }
-
 
 std::unique_ptr<Render> Render::make_default_render()
 {
     std::unique_ptr<Render> render = std::make_unique<Render>();
-
-    glm::mat4 view = glm::lookAt(glm::vec3(2.0, 1.5, 0.0), glm::vec3(0.0, 0.85, 0.0), glm::vec3(0.0, 1.0, 0.0));
-    render->set_view(view);
-
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
-    render->set_projection(projection);
-
+    render->set_camera(Camera(glm::vec3(2.0, 1.5, 0.0), glm::vec3(0.0, 0.85, 0.0), WindowSize(800, 600)));
     Light light(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     render->set_light(light);
-
-    render->set_puppet("/home/head/Development/FaceRig/resources/puppets/head/head.obj");
 
     return std::move(render);
 }
