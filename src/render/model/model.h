@@ -1,19 +1,18 @@
 #ifndef FACERIG_MODEL_H
 #define FACERIG_MODEL_H
 
-#include <string>
-#include <vector>
-#include <array>
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "stb_image.h"
 
-#include "mesh.h"
-#include "../shader/shader.h"
+#include <iostream>
+#include <string>
+#include <vector>
+#include <array>
 
-// enum class TextureType : char[10] { diffuse = "diffuse" };
+#include "mesh.h"
+
 
 struct Texture {
     unsigned int id;
@@ -32,9 +31,10 @@ public:
     const std::vector<Mesh> &get_meshes() const;
     const std::vector<Texture> &get_textures() const;
 
+    glm::mat4 transformation;
+
 private:
     void load_model(std::string path);
-
     Mesh process_mesh(aiMesh *mesh, const aiScene *scene);
     std::vector<Vertex> load_vertices(const aiMesh *mesh);
     std::vector<unsigned int> load_indices(const aiMesh *mesh);

@@ -6,10 +6,10 @@ Mesh::Mesh(std::string name, std::vector<Vertex> vertices, std::vector<unsigned 
            std::vector<unsigned int> texture_ids)
         : name(std::move(name)), vertices(std::move(vertices)), indices(std::move(indices)), texture_ids(std::move(texture_ids))
 {
-    setup_mesh();
+    load_to_buffers();
 }
 
-void Mesh::setup_mesh()
+void Mesh::load_to_buffers()
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -37,15 +37,23 @@ void Mesh::setup_mesh()
     glBindVertexArray(0);
 }
 
-void Mesh::draw() const
-{
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
-
 const std::vector<unsigned int> &Mesh::get_used_textures() const
 {
     return texture_ids;
+}
+
+const std::string &Mesh::get_name() const
+{
+    return name;
+}
+
+unsigned int Mesh::get_vertex_array_id() const
+{
+    return VAO;
+}
+
+unsigned long Mesh::get_indicies_count() const
+{
+    return indices.size();
 }
 

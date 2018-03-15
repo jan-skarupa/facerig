@@ -22,6 +22,11 @@ RenderFacade::~RenderFacade()
 void RenderFacade::set_puppet(std::string object_path)
 {
     puppet_id = render->add_model(object_path);
+
+    puppet_transforms[PuppetParts::head] = render->get_transform_matrix(puppet_id);
+    puppet_transforms[PuppetParts::left_eye] = render->get_transform_matrix(puppet_id, "LeftEye");
+    puppet_transforms[PuppetParts::right_eye] = render->get_transform_matrix(puppet_id, "RightEye");
+    puppet_transforms[PuppetParts::jaw] = render->get_transform_matrix(puppet_id, "Jaw");
 }
 
 /*
@@ -41,10 +46,6 @@ void RenderFacade::render_scene()
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Features features;
-    // features.head.rotation.horizontal = 1.2;
-    // set_puppet_pose(features);
-
     render->render_scene();
 
     glfwSwapBuffers(window);
@@ -53,12 +54,18 @@ void RenderFacade::render_scene()
 
 void RenderFacade::run_glfw_render()
 {
-    render->init_scene();
+    render->configure_shaders();
 
     while(!glfwWindowShouldClose(window))
     {
-        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
+        }
+
+        glm::mat4 matrix;
+        matrix = glm::scale(matrix, glm::vec3(0.1f, 0.1f, 0.1f));
+        matrix = glm::rotate(matrix, 1.1f, glm::vec3(0.0f, 1.0f, 0.0f));
+        *puppet_transforms[PuppetParts::head] = matrix;
 
         render_scene();
     }

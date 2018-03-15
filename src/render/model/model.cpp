@@ -134,40 +134,6 @@ const std::vector<Texture> &Model::get_textures() const
     return textures;
 }
 
-/*
-std::vector<Texture> Model::load_material_textures(aiMaterial *material, aiTextureType type, std::string typeName)
-{
-    std::vector<Texture> textures;
-
-
-    for(unsigned int i = 0; i < material->GetTextureCount(type); i++)
-    {
-        aiString str;
-        material->GetTexture(type, i, &str);
-        bool skip = false;
-        for (auto &j : this->textures)
-        {
-            if(std::strcmp(j.path.data(), str.C_Str()) == 0)
-            {
-                this->textures.push_back(j);
-                skip = true;
-                break;
-            }
-        }
-        if(!skip)
-        {   // if texture hasn't been loaded already, load it
-            Texture texture;
-            texture.id = texture_from_file(str.C_Str(), directory);
-            texture.type = typeName;
-            texture.path = str.C_Str();
-            // textures.push_back(texture);
-            textures.push_back(texture); // add to loaded textures
-        }
-    }
-    return textures;
-}
-*/
-
 unsigned int texture_from_file(const char *path, std::string & directory)
 {
     std::string filename = std::string(path);

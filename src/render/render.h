@@ -41,11 +41,13 @@ public:
     Render() {};
     static std::unique_ptr<Render> make_default_render();
 
-    int  add_model(std::string object_path);
+    unsigned int add_model(std::string object_path);
+    void configure_shaders();
+    void render_scene();
+
     void set_light(const Light& light);
     void set_camera(const Camera camera);
-    void init_scene();
-    void render_scene();
+    glm::mat4* get_transform_matrix(unsigned int model_id, std::string mesh_name = "");
 
 private:
     void bind_mesh_textures(const std::vector<Texture> &textures, const std::vector<unsigned int> &used_textures);

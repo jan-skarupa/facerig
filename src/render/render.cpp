@@ -1,8 +1,22 @@
 #include "render.h"
 
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+unsigned int Render::add_model(std::string object_path)
+{
+    models.push_back(std::make_unique<Model>(object_path));
+    return (unsigned int)models.size()-1;
+}
+
+void Render::configure_shaders()
+{
+    shader.use();
+    shader.set_uniform("view", view);
+    shader.set_uniform("projection", projection);
+
+    shader.set_uniform("light.position", light.position);
+    shader.set_uniform("light.color", light.color);
+}
 
 void Render::bind_mesh_textures(const std::vector<Texture> &textures, const std::vector<unsigned int> &used_textures)
 {
@@ -26,36 +40,22 @@ void Render::bind_mesh_textures(const std::vector<Texture> &textures, const std:
 
 void Render::render_scene()
 {
-    glm::mat4 transform;
-    transform = glm::scale(transform, glm::vec3(0.1f, 0.1f, 0.1f));
-    transform = glm::rotate(transform, 1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
-    shader.set_uniform("model", transform);
-
     for (auto &model : models)
     {
+        glm::mat4 model_transform = model->transformation;
         for (auto &mesh : model->get_meshes())
         {
+            glm::mat4 mesh_transform = model_transform * mesh.transformation;
+            shader.set_uniform("model", mesh_transform);
+
             bind_mesh_textures(model->get_textures(), mesh.get_used_textures());
-            mesh.draw();
+            glBindVertexArray(mesh.get_vertex_array_id());
+            glDrawElements(GL_TRIANGLES, mesh.get_indicies_count(), GL_UNSIGNED_INT, 0);
+            glBindVertexArray(0);
         }
     }
 }
 
-void Render::init_scene()
-{
-    shader.use();
-    shader.set_uniform("view", view);
-    shader.set_uniform("projection", projection);
-
-    shader.set_uniform("light.position", light.position);
-    shader.set_uniform("light.color", light.color);
-}
-
-int Render::add_model(std::string object_path)
-{
-    models.push_back(std::make_unique<Model>(object_path));
-    return (int)models.size();
-}
 
 void Render::set_light(const Light& light)
 {
@@ -71,6 +71,21 @@ void Render::set_camera(const Camera camera)
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
     this->projection = projection;
 }
+
+glm::mat4 *Render::get_transform_matrix(unsigned int model_id, std::string mesh_name)
+{
+    if (mesh_name == "") {
+        return &(models[model_id]->transformation);
+    }
+
+    for (auto &mesh : models[model_id]->get_meshes()) {
+        if (mesh.get_name() == mesh_name) {
+            return const_cast<glm::mat4*>(&(mesh.transformation));
+        }
+    }
+    return nullptr;
+}
+
 
 std::unique_ptr<Render> Render::make_default_render()
 {
