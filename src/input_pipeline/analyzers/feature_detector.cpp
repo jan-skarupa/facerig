@@ -1,22 +1,23 @@
+#include <input_source.h>
 #include "feature_detector.h"
 
-void FeatureDetector::extract_landmark_points(const std::array<cv::Point, 68> &landmarks)
+std::array<cv::Point2d, 6> FeatureDetector::extract_landmark_points(const std::array<cv::Point, 68> &landmarks)
 {
-    image_landmarks[0] = cv::Point2d(landmarks[30]);    // Nose tip
-    image_landmarks[1] = cv::Point2d(landmarks[8]);     // Chin
-    image_landmarks[2] = cv::Point2d(landmarks[45]);    // Left eye left corner
-    image_landmarks[3] = cv::Point2d(landmarks[36]);    // Right eye right corner
-    image_landmarks[4] = cv::Point2d(landmarks[54]);    // Left Mouth corner
-    image_landmarks[5] = cv::Point2d(landmarks[48]);    // Right mouth corner
+    std::array<cv::Point2d, 6> rigging_landmarks;
+    rigging_landmarks[0] = cv::Point2d(landmarks[30]);    // Nose tip
+    rigging_landmarks[1] = cv::Point2d(landmarks[8]);     // Chin
+    rigging_landmarks[2] = cv::Point2d(landmarks[45]);    // Left eye left corner
+    rigging_landmarks[3] = cv::Point2d(landmarks[36]);    // Right eye right corner
+    rigging_landmarks[4] = cv::Point2d(landmarks[54]);    // Left Mouth corner
+    rigging_landmarks[5] = cv::Point2d(landmarks[48]);    // Right mouth corner
+
+    return rigging_landmarks;
 }
 
 
-FeatureDetector::FeatureDetector()
+FeatureDetector::FeatureDetector(const CamResolution& camera_resolution)
 {
-    double focal_length = 640; // res.width;1280 720
-    // cv::Point2d center = cv::Point2d(res.width / 2, res.height / 2);
-    cv::Point2d center = cv::Point2d(640, 360); // 320, 240
-    camera_matrix = (cv::Mat_<double>(3, 3) << focal_length, 0, center.x, 0, focal_length, center.y, 0, 0, 1);
+    update_camera_matrix(camera_resolution);
     dist_coeffs = cv::Mat::zeros(4, 1, cv::DataType<double>::type); // Assuming no lens distortion
 
     reference_points[0] = cv::Point3d(0.0f, 0.0f, 0.0f);           // Nose tip
@@ -27,18 +28,48 @@ FeatureDetector::FeatureDetector()
     reference_points[5] = cv::Point3d(150.0f, -150.0f, -125.0f);   // Right mouth corner
 }
 
-cv::Mat FeatureDetector::detect_face_direction(const std::array<cv::Point, 68> &landmarks)
+std::array<float,3> rotvec_to_eulers(cv::Mat rotation_vector);
+
+std::array<float,3> FeatureDetector::detect_face_direction(const std::array<cv::Point, 68> &landmarks)
 {
     cv::Mat rotation_vector;
     cv::Mat translation_vector;
 
-    extract_landmark_points(landmarks);
-    cv::solvePnP(reference_points, image_landmarks, camera_matrix, dist_coeffs, rotation_vector, translation_vector);
+    std::array<cv::Point2d, 6> rigging_landmarks = extract_landmark_points(landmarks);
+    cv::solvePnP(reference_points, rigging_landmarks, camera_matrix, dist_coeffs, rotation_vector, translation_vector);
 
-    double vert = rotation_vector.at<double>(0,0);
-    double horz = rotation_vector.at<double>(1,0);
-    double tilt = rotation_vector.at<double>(2,0);
-    std::cout << "horz: " << horz*57 << "; vert: " << vert*57 << std::endl;
+    return rotvec_to_eulers(rotation_vector);
+}
 
-    return rotation_vector;
+void FeatureDetector::update_camera_matrix(CamResolution camera_resolution)
+{
+    double focal_length = camera_resolution.width;
+    cv::Point2d center = cv::Point2d(camera_resolution.width / 2, camera_resolution.height / 2);
+    camera_matrix = (cv::Mat_<double>(3, 3) << focal_length, 0, center.x, 0, focal_length, center.y, 0, 0, 1);
+}
+
+
+std::array<float,3> rotvec_to_eulers(cv::Mat rotation_vector)
+{
+    cv::Mat tmp_rotation_matrix;
+    cv::Rodrigues(rotation_vector, tmp_rotation_matrix);
+
+    double rmat[3][3];
+    for (int row=0; row<3; row++)
+        for (int col=0; col<3; col++)
+            rmat[row][col] = tmp_rotation_matrix.at<double>(row, col);
+
+    double angle = acos((rmat[0][0] + rmat[1][1] + rmat[2][2] - 1) / 2);
+
+    double d1 = rmat[2][1]-rmat[1][2];
+    double d2 = rmat[0][2]-rmat[2][0];
+    double d3 = rmat[1][0]-rmat[0][1];
+    double denominator = (float)sqrt(d1*d1 + d2*d2 + d3*d3);
+
+    double x = d1 / denominator;
+    double y = d2 / denominator;
+    double z = d3 / denominator;
+    std::array<float,3> arr = { angle*x, angle*y, angle*z };
+
+    return arr;
 }

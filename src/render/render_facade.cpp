@@ -7,6 +7,10 @@ RenderFacade::RenderFacade(ContextType type, WindowSize window_size)
         window = create_glfw_context_window(window_size);
         glEnable(GL_DEPTH_TEST);
         render = Render::make_default_render();
+
+        puppet_normalization = glm::scale(puppet_normalization, glm::vec3(0.32f, 0.32f, 0.32f));
+        puppet_normalization = glm::rotate(puppet_normalization, 1.55f, glm::vec3(0.0f, 1.0f, 0.0f));
+        puppet_normalization = glm::translate(puppet_normalization, glm::vec3(0.0f, 0.0f, -0.8f));
     } else {
         std::cout << "Qt context type not implemented." << std::endl;
         throw;
@@ -62,13 +66,19 @@ void RenderFacade::run_glfw_render()
             glfwSetWindowShouldClose(window, true);
         }
 
-        glm::mat4 matrix;
-        matrix = glm::scale(matrix, glm::vec3(0.1f, 0.1f, 0.1f));
-        matrix = glm::rotate(matrix, 1.1f, glm::vec3(0.0f, 1.0f, 0.0f));
-        *puppet_transforms[PuppetParts::head] = matrix;
-
         render_scene();
     }
+}
+
+void RenderFacade::init_scene()
+{
+    render->configure_shaders();
+}
+
+void RenderFacade::set_puppet_pose(glm::mat4 matrix)
+{
+    matrix = matrix * puppet_normalization;
+    *puppet_transforms[PuppetParts::head] = matrix;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

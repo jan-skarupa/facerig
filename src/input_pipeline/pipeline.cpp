@@ -1,11 +1,10 @@
 #include "pipeline.h"
 
-
 struct Image {
     cv::Mat frame;
     std::unique_ptr<cv::Rect> face;
     std::array<cv::Point, 68> landmarks;
-    cv::Mat head_rotation;
+    std::array<float,3> head_rotation;
 };
 
 
@@ -26,7 +25,7 @@ void InputPipeline::run_pipeline()
 
     if (image.face != nullptr) {
         image.landmarks = landmark_detector->detect_landmarks(image.frame, *image.face);
-        image.head_rotation = feature_detector.detect_face_direction(image.landmarks);
+        head_rotation = feature_detector.detect_face_direction(image.landmarks);
 
         cv::rectangle(image.frame, *image.face, cv::Scalar(0,0,0));
         for (const auto &mark : image.landmarks) {
@@ -39,7 +38,8 @@ void InputPipeline::run_pipeline()
 
 void InputPipeline::open_stream()
 {
-    in_stream->open_stream(0);
+    in_stream->open_stream(0, CamResolution(640, 480));
+    feature_detector.update_camera_matrix(CamResolution(640, 480));
 }
 
 void InputPipeline::close_stream()

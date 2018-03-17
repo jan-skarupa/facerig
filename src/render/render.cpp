@@ -11,6 +11,8 @@ unsigned int Render::add_model(std::string object_path)
 void Render::configure_shaders()
 {
     shader.use();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     shader.set_uniform("view", view);
     shader.set_uniform("projection", projection);
 

@@ -8,17 +8,17 @@
 
 class FeatureDetector {
 public:
-    FeatureDetector();
+    FeatureDetector(const CamResolution& camera_resolution = CamResolution(640, 480));
 
-    cv::Mat detect_face_direction(const std::array<cv::Point, 68> &landmarks);
+    void update_camera_matrix(CamResolution camera_resolution);
+    std::array<float,3> detect_face_direction(const std::array<cv::Point, 68> &landmarks);
 
 private:
-    void extract_landmark_points(const std::array<cv::Point, 68> &landmarks);
+    std::array<cv::Point2d, 6> extract_landmark_points(const std::array<cv::Point, 68> &landmarks);
 
     cv::Mat camera_matrix;
     cv::Mat dist_coeffs;
     std::array<cv::Point3d, 6> reference_points;
-    std::array<cv::Point2d, 6> image_landmarks;
 };
 
 

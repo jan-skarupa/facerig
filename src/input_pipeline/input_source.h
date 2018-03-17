@@ -5,6 +5,7 @@
 #include "opencv2/opencv.hpp"
 
 struct CamResolution {
+    CamResolution() {};
     CamResolution(int width, int height) : width(width), height(height) {};
     int width;
     int height;

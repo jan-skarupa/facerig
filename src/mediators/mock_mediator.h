@@ -2,6 +2,7 @@
 #define FACERIG_MOCK_MEDIATOR_H
 
 #include "pipeline_ui_mediator.h"
+#include "../render/render_facade.h"
 
 
 class MockMediator : public PipelineUiMediator {
@@ -11,6 +12,9 @@ public:
 
     void run_pipeline() override;
     void render_pipeline_output() override;
+
+    void render_pipeline();
+    std::shared_ptr<RenderFacade> render;
 };
 
 

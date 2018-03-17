@@ -20,6 +20,8 @@ public:
     void run_pipeline();    // todo: Make private & friend function of mediator interface
     const cv::Mat& get_frame();
 
+    std::array<float,3> head_rotation;
+
 private:
     cv::Mat frame;
     std::unique_ptr<InputSource> in_stream;

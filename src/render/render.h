@@ -10,7 +10,7 @@
 
 #include "model/model.h"
 #include "shader/shader.h"
-#include "camera/camera.h"
+// #include "camera/camera.h"
 
 
 struct WindowSize {

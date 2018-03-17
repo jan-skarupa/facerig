@@ -37,6 +37,12 @@ add_executable(CameraTest src/input_pipeline/main.cpp ${MEDIATORS})
 target_link_libraries(CameraTest InputPipeline)
 set_target_properties(CameraTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
+
+add_executable(FaceRigNoGUI src/main_nogui.cpp ${MEDIATORS})
+target_link_libraries(FaceRigNoGUI InputPipeline Render)
+set_target_properties(FaceRigNoGUI PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+
+
 add_subdirectory(src/ui)
 add_executable(FaceRig src/main.cpp)
 target_link_libraries(FaceRig UI InputPipeline)

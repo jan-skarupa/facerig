@@ -13,6 +13,8 @@ public:
     ~RenderFacade();
 
     void set_puppet(std::string object_path);
+    void set_puppet_pose(glm::mat4 matrix);
+    void init_scene();
     void render_scene();
     void run_glfw_render();
 
@@ -23,6 +25,7 @@ private:
     std::unique_ptr<Render> render;
 
     unsigned int puppet_id;
+    glm::mat4 puppet_normalization;
     std::map<PuppetParts, glm::mat4*> puppet_transforms;
 };
 
