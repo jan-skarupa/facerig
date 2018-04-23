@@ -21,11 +21,13 @@ struct Vertex {
 
 class Mesh {
 public:
-    Mesh(std::string name, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures);
+    Mesh(std::string name, std::vector<Vertex> vertices, std::vector<unsigned int> indices,
+         glm::vec3 base_color, std::vector<unsigned int> textures);
 
     unsigned int get_vertex_array_id() const;
     unsigned long get_indicies_count() const;
     const std::string &get_name() const;
+    const glm::vec3 &get_base_color() const;
     const std::vector<unsigned int> &get_used_textures() const;
 
     glm::mat4 transformation;
@@ -37,6 +39,7 @@ private:
     std::string name;
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
+    glm::vec3 base_color;
     std::vector<unsigned int> texture_ids;
 };
 

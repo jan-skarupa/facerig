@@ -16,13 +16,13 @@ set(V_SHADER_LITERAL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/shader/helper/vertex_liter
 add_custom_command (OUTPUT ${V_SHADER_LITERAL_PATH}
                     COMMAND shader_literal_generator ../vertex.glsl
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/shader/helper
-                    DEPENDS shader_literal_generator)
+                    DEPENDS shader_literal_generator ${CMAKE_SOURCE_DIR}/src/render/shader/vertex.glsl)
 
 set(F_SHADER_LITERAL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/shader/helper/fragment_literal.cpp)
 add_custom_command (OUTPUT ${F_SHADER_LITERAL_PATH}
                     COMMAND shader_literal_generator ../fragment.glsl
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/shader/helper
-                    DEPENDS shader_literal_generator)
+                    DEPENDS shader_literal_generator ${CMAKE_SOURCE_DIR}/src/render/shader/fragment.glsl)
 
 
 add_library(Render ${RENDER_SRC} ${RENDER_LIB} ${V_SHADER_LITERAL_PATH} ${F_SHADER_LITERAL_PATH})

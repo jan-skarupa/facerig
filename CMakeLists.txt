@@ -16,7 +16,6 @@ endif()
 include_directories(${DLIB_DIR})
 add_subdirectory(${DLIB_DIR}/dlib)
 
-
 set(CMAKE_PREFIX_PATH /home/head/Qt/5.10.0/gcc_64)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -26,24 +25,21 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 
 add_subdirectory(src/render)
+add_subdirectory(src/input_pipeline)
+add_subdirectory(src/ui)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+
+
 add_executable(RenderTest src/render/main.cpp)
 target_link_libraries(RenderTest Render)
-set_target_properties(RenderTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
-add_subdirectory(src/input_pipeline)
-set(MEDLOC src/mediators)
-file(GLOB MEDIATORS ${MEDLOC}/pipeline_ui_mediator.h ${MEDLOC}/mock_mediator.h ${MEDLOC}/mock_mediator.cpp)
-add_executable(CameraTest src/input_pipeline/main.cpp ${MEDIATORS})
+add_executable(CameraTest src/input_pipeline/main.cpp)
 target_link_libraries(CameraTest InputPipeline)
-set_target_properties(CameraTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 
-add_executable(FaceRigNoGUI src/main_nogui.cpp ${MEDIATORS})
+set(MOCK_MEDIATOR src/mediators/pipeline_ui_mediator.h src/mediators/mock_mediator.h src/mediators/mock_mediator.cpp)
+add_executable(FaceRigNoGUI src/main_nogui.cpp ${MOCK_MEDIATOR})
 target_link_libraries(FaceRigNoGUI InputPipeline Render)
-set_target_properties(FaceRigNoGUI PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
-
-add_subdirectory(src/ui)
 add_executable(FaceRig src/main.cpp)
 target_link_libraries(FaceRig UI InputPipeline)
-set_target_properties(FaceRig PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")

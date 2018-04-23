@@ -11,6 +11,7 @@
 class InputPipeline
 {
 public:
+    static std::shared_ptr<InputPipeline> make_default_pipeline();
     explicit InputPipeline(std::unique_ptr<InputSource> input_stream,
                            std::unique_ptr<FaceDetector> face_detector,
                            std::unique_ptr<LandmarkDetector> landmark_detector);
@@ -30,7 +31,5 @@ private:
     FeatureDetector feature_detector;
 };
 
-
-std::shared_ptr<InputPipeline> make_default_input_pipeline();
 
 #endif // CAMERA_H

@@ -11,7 +11,7 @@ unsigned int Render::add_model(std::string object_path)
 void Render::configure_shaders()
 {
     shader.use();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     shader.set_uniform("view", view);
     shader.set_uniform("projection", projection);
@@ -49,6 +49,7 @@ void Render::render_scene()
         {
             glm::mat4 mesh_transform = model_transform * mesh.transformation;
             shader.set_uniform("model", mesh_transform);
+            shader.set_uniform("color", mesh.get_base_color());
 
             bind_mesh_textures(model->get_textures(), mesh.get_used_textures());
             glBindVertexArray(mesh.get_vertex_array_id());

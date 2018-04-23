@@ -117,11 +117,16 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene)
     std::vector<unsigned int> indices = load_indices(mesh);
     std::vector<unsigned int> texture_ids;
 
+    aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+    aiColor3D color(0.f, 0.f, 0.f);
+    material->Get(AI_MATKEY_COLOR_DIFFUSE,color);
+    glm::vec3 base_color = glm::vec3(color[0], color[1], color[2]);
+
     if (mesh_has_material(mesh)) {
         texture_ids = load_material(mesh, scene);
     }
 
-    return Mesh(name, vertices, indices, texture_ids);
+    return Mesh(name, vertices, indices, base_color, texture_ids);
 }
 
 const std::vector<Mesh> &Model::get_meshes() const

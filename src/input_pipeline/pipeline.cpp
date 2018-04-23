@@ -53,7 +53,7 @@ const cv::Mat& InputPipeline::get_frame()
 }
 
 
-std::shared_ptr<InputPipeline> make_default_input_pipeline()
+std::shared_ptr<InputPipeline> InputPipeline::make_default_pipeline()
 {
     auto in_stream = make_camera_stream();
     auto face_detector = make_harr_face_detector("../resources/face_detection/haarcascade_frontalface_alt.xml");

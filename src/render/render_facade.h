@@ -13,6 +13,7 @@ public:
     ~RenderFacade();
 
     void set_puppet(std::string object_path);
+    void set_puppet_normalization(const glm::mat4& normalize_matrix);
     void set_puppet_pose(glm::mat4 matrix);
     void init_scene();
     void render_scene();

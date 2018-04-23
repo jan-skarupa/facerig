@@ -3,8 +3,9 @@
 #include <utility>
 
 Mesh::Mesh(std::string name, std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-           std::vector<unsigned int> texture_ids)
-        : name(std::move(name)), vertices(std::move(vertices)), indices(std::move(indices)), texture_ids(std::move(texture_ids))
+           glm::vec3 base_color, std::vector<unsigned int> texture_ids)
+        : name(std::move(name)), vertices(std::move(vertices)), indices(std::move(indices)),
+          base_color(base_color), texture_ids(std::move(texture_ids))
 {
     load_to_buffers();
 }
@@ -55,5 +56,10 @@ unsigned int Mesh::get_vertex_array_id() const
 unsigned long Mesh::get_indicies_count() const
 {
     return indices.size();
+}
+
+const glm::vec3 &Mesh::get_base_color() const
+{
+    return base_color;
 }
 

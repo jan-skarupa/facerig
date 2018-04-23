@@ -28,7 +28,7 @@ void MockMediator::render_pipeline_output()
 }
 
 
-std::shared_ptr<MockMediator> make_mock_mediator(std::shared_ptr<InputPipeline> input_pipeline)
+std::shared_ptr<MockMediator> MockMediator::make_mediator(std::shared_ptr<InputPipeline> input_pipeline)
 {
     return std::make_shared<MockMediator>(input_pipeline);
 }

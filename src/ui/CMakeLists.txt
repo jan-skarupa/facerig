@@ -6,5 +6,5 @@ list(REMOVE_ITEM SOURCE_FILES ${MAIN})
 
 qt5_wrap_ui(UI_HEADERS mainwindow.ui)
 
-add_library(UI ${SOURCE_FILES} ${UI_HEADERS})
+add_library(UI ${SOURCE_FILES} ${UI_HEADERS} "../mediators/pipeline_qt_mediator.h" "../mediators/pipeline_qt_mediator.cpp")
 target_link_libraries(UI Qt5::Widgets)

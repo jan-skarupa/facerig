@@ -16,13 +16,15 @@ const char* fragment_literal =
 
 "uniform Light light;\n"
 "uniform sampler2D texture_diffuse1;\n"
+"uniform vec3 color;\n"
 
 "void main()\n"
 "{\n"
 "	vec3  norm = normalize(normal);\n"
 "    vec3  light_dir = normalize(light.position - fragment_pos);\n"
 "    float angle = max(dot(norm, light_dir), 0.0);\n"
-"    vec3  diffuse = light.color * angle * texture(texture_diffuse1, texture_coord).rgb;\n"
+"    vec3  diffuse = light.color * angle * color;\n"
+"    // vec3  diffuse = light.color * angle * texture(texture_diffuse1, texture_coord).rgb;\n"
 
-"    Frag_color = vec4(diffuse * vec3(0.5, 0.5, 0.5), 1.0);\n"
+"    Frag_color = vec4(diffuse, 1.0);\n"
 "}\n";
