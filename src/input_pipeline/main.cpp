@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[])
 {
-    std::shared_ptr<InputPipeline> pipeline = make_default_input_pipeline();
+    std::shared_ptr<InputPipeline> pipeline = InputPipeline::make_default_pipeline();
 
     pipeline->open_stream();
     while (cv::waitKey(30) < 0)

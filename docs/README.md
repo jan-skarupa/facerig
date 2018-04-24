@@ -14,7 +14,12 @@ object formats are supported.
 
 Application rigs detected head pose to head model. The render has rather 
 general-purpose nature but a facade for face rigging is defined. See the examples below.
-****
+
+<div align="left">
+  <img src="https://user-images.githubusercontent.com/22100464/39174146-2684866e-47a7-11e8-9a20-cdf4166eaa83.png" width="25%" />
+  <img src="https://user-images.githubusercontent.com/22100464/39174149-26b06d9c-47a7-11e8-8b96-9625307d3e4f.png" width="25%" />
+  <img src="https://user-images.githubusercontent.com/22100464/39174150-26cd484a-47a7-11e8-941d-310c2261dc05.png" width="25%" />
+</div>
 
 ### Requirements
 

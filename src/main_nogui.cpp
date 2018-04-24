@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
     std::shared_ptr<InputPipeline> pipeline = InputPipeline::make_default_pipeline();
     std::shared_ptr<MockMediator>  mediator = MockMediator::make_mediator(pipeline);
-    mediator->render = std::make_shared<RenderFacade>(ContextType::qlfw, WindowSize(1024, 768));
+    mediator->render = std::make_shared<RenderFacade>(ContextType::qlfw, WindowSize(800, 600));
 
     // mediator->render->set_puppet("../resources/puppets/nanosuit/nanosuit.obj");
     mediator->render->set_puppet("../resources/puppets/female/female.obj");

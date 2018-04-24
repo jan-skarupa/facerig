@@ -14,8 +14,10 @@ void MockMediator::render_pipeline()
 
 void MockMediator::render_pipeline_output()
 {
+    cv::Mat gray_image;
     cv::Mat image = input_pipeline.lock()->get_frame();
-    cv::imshow("Pipeline Output", image);
+    cv::cvtColor(image, gray_image, CV_BGR2GRAY);
+    cv::imshow("Pipeline Output", gray_image);
 
     glm::mat4 matrix;
     std::array<float,3> rotations = input_pipeline.lock()->head_rotation;
