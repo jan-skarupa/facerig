@@ -13,7 +13,4 @@ public:
     virtual std::array<cv::Point, 68> detect_landmarks(const cv::Mat& frame, const cv::Rect& face) = 0;
 };
 
-
-std::unique_ptr<LandmarkDetector> make_dlib_landmark_detector(const char* source_filepath);
-
 #endif //FACERIG_LANDMARK_DETECTOR_H

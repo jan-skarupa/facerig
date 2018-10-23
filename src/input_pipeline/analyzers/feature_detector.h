@@ -5,12 +5,14 @@
 #include <array>
 #include <vector>
 
+#include "../camera_resolution.h"
+
 
 class FeatureDetector {
 public:
-    FeatureDetector(const CamResolution& camera_resolution = CamResolution(640, 480));
+    explicit FeatureDetector(const CamResolution& camera_resolution = CamResolution(640, 480));
 
-    void update_camera_matrix(CamResolution camera_resolution);
+    cv::Mat calculate_camera_matrix(CamResolution camera_resolution);
     std::array<float,3> detect_face_direction(const std::array<cv::Point, 68> &landmarks);
 
 private:

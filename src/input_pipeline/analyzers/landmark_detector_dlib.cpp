@@ -1,17 +1,5 @@
-#include "landmark_detector.h"
 
-
-class LandmarkDetectorDlib : public LandmarkDetector {
-public:
-    explicit LandmarkDetectorDlib(const char *fld_model_path);
-
-    std::array<cv::Point, 68> detect_landmarks(const cv::Mat &frame, const cv::Rect &face) override;
-
-private:
-    dlib::shape_predictor fld_model;
-    dlib::full_object_detection landmarks;
-};
-
+#include "landmark_detector_dlib.h"
 
 LandmarkDetectorDlib::LandmarkDetectorDlib(const char *fld_model_path)
 {
@@ -33,10 +21,4 @@ std::array<cv::Point, 68> LandmarkDetectorDlib::detect_landmarks(const cv::Mat &
     }
 
     return cv_landmarks;
-}
-
-
-std::unique_ptr<LandmarkDetector> make_dlib_landmark_detector(const char *source_filepath)
-{
-    return std::make_unique<LandmarkDetectorDlib>(source_filepath);
 }

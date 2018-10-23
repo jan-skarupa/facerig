@@ -10,7 +10,7 @@
 
 #include "model/model.h"
 #include "shader/shader.h"
-// #include "camera/camera.h"
+#include "../input_pipeline/camera_resolution.h"
 
 
 struct WindowSize {
@@ -27,36 +27,41 @@ struct Light {
 };
 
 struct Camera {
-    Camera(glm::vec3 position, glm::vec3 target, WindowSize window_size)
-            : position(position), target(target), window_size(window_size) {};
+    Camera(glm::vec3 position, glm::vec3 target) : position(position), target(target) {};
 
     glm::vec3   position;
     glm::vec3   target;
-    WindowSize  window_size;
 };
 
 
 class Render {
 public:
-    Render() {};
-    static std::unique_ptr<Render> make_default_render();
+    Render(Camera cam, WindowSize winsize);
 
-    unsigned int add_model(std::string object_path);
-    void configure_shaders();
+    unsigned int add_model(std::string object_path, glm::mat4 normaliz_mat = glm::mat4(1.0));
     void render_scene();
 
-    void set_light(const Light& light);
-    void set_camera(const Camera camera);
-    glm::mat4* get_transform_matrix(unsigned int model_id, std::string mesh_name = "");
+    void set_camera(const Camera &cam);
+    void set_camera_target(const glm::vec3 &target);
+    void set_camera_position(const glm::vec3 &position);
+    void set_light(const Light &light);
+    void set_model_transformation(unsigned int model_id, glm::mat4 transformation);
+    void set_mesh_transformation(unsigned int model_id, unsigned int mesh_id, const glm::mat4 &transformation);
+
+    GLFWwindow* window;
 
 private:
+    void update_projection_matricies();
+    void create_glfw_context(WindowSize winsize);
     void bind_mesh_textures(const std::vector<Texture> &textures, const std::vector<unsigned int> &used_textures);
 
-    glm::mat4 view;
-    glm::mat4 projection;
-    Light light;
+    glm::mat4   view;
+    glm::mat4   projection;
+    WindowSize  window_size;
+    Camera      camera;
+    Light       light;
 
-    Shader shader;
+    std::unique_ptr<Shader> shader;
     std::vector<std::unique_ptr<Model>> models;
 };
 

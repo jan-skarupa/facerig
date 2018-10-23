@@ -24,14 +24,19 @@ struct Texture {
 class Model {
 public:
     Model() {};
-    explicit Model(std::string & path)  {
+    explicit Model(std::string & path, glm::mat4 normal)  {
+        normalization = normal;
         load_model(path);
     }
+
+    void set_mesh_transformation(unsigned int mesh_id, const glm::mat4 &transform);
+    glm::mat4 get_mesh_transformation(unsigned int mesh_id);
 
     const std::vector<Mesh> &get_meshes() const;
     const std::vector<Texture> &get_textures() const;
 
-    glm::mat4 transformation;
+    glm::mat4 normalization = glm::mat4(1.0);
+    glm::mat4 transformation = glm::mat4(1.0);
 
 private:
     void load_model(std::string path);

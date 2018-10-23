@@ -113,6 +113,7 @@ std::vector<unsigned int> Model::load_material(const aiMesh *mesh, const aiScene
 Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene)
 {
     std::string name = std::string(mesh->mName.C_Str());
+    std::cout << name << std::endl;
     std::vector<Vertex> vertices = load_vertices(mesh);
     std::vector<unsigned int> indices = load_indices(mesh);
     std::vector<unsigned int> texture_ids;
@@ -137,6 +138,14 @@ const std::vector<Mesh> &Model::get_meshes() const
 const std::vector<Texture> &Model::get_textures() const
 {
     return textures;
+}
+
+void Model::set_mesh_transformation(unsigned int mesh_id, const glm::mat4 &transform) {
+    meshes[mesh_id].transformation = transform;
+}
+
+glm::mat4 Model::get_mesh_transformation(const unsigned int mesh_id) {
+    return meshes[mesh_id].transformation;
 }
 
 unsigned int texture_from_file(const char *path, std::string & directory)

@@ -1,24 +1,57 @@
 #include "render.h"
-
 #include <glm/gtc/type_ptr.hpp>
 
-unsigned int Render::add_model(std::string object_path)
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    models.push_back(std::make_unique<Model>(object_path));
+    glViewport(0, 0, width, height);
+}
+
+void Render::create_glfw_context(WindowSize winsize)
+{
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    window = glfwCreateWindow(winsize.width, winsize.height, "LearnOpenGL", nullptr, nullptr);
+    if (window == nullptr) {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        throw;
+    }
+    glfwMakeContextCurrent(window);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        throw;
+    }
+
+    glViewport(0, 0, winsize.width, winsize.height);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    glEnable(GL_DEPTH_TEST);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+
+
+Render::Render(Camera cam, WindowSize winsize) : camera(cam), window_size(winsize)
+{
+    create_glfw_context(winsize);
+
+    shader = std::make_unique<Shader>();
+    shader->use();
+    update_projection_matricies();
+}
+
+
+unsigned int Render::add_model(std::string object_path, glm::mat4 normaliz_mat)
+{
+    std::cout << object_path << std::endl;
+    models.push_back(std::make_unique<Model>(object_path, normaliz_mat));
     return (unsigned int)models.size()-1;
 }
 
-void Render::configure_shaders()
-{
-    shader.use();
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    shader.set_uniform("view", view);
-    shader.set_uniform("projection", projection);
-
-    shader.set_uniform("light.position", light.position);
-    shader.set_uniform("light.color", light.color);
-}
 
 void Render::bind_mesh_textures(const std::vector<Texture> &textures, const std::vector<unsigned int> &used_textures)
 {
@@ -34,22 +67,28 @@ void Render::bind_mesh_textures(const std::vector<Texture> &textures, const std:
         else if(name == "texture_specular")
             number = std::to_string(specularNr++);
 
-        shader.set_uniform("material." + name + number, (int)i);
+        shader->set_uniform("material." + name + number, (int)i);
         glBindTexture(GL_TEXTURE_2D, textures[used_textures[i]].id);
     }
     glActiveTexture(GL_TEXTURE0);
 }
 
+
 void Render::render_scene()
 {
+    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     for (auto &model : models)
     {
-        glm::mat4 model_transform = model->transformation;
+        glm::mat4 model_transform = model->normalization * model->transformation;
         for (auto &mesh : model->get_meshes())
         {
             glm::mat4 mesh_transform = model_transform * mesh.transformation;
-            shader.set_uniform("model", mesh_transform);
-            shader.set_uniform("color", mesh.get_base_color());
+            // shader->set_uniform("model", mesh_transform);
+
+            shader->set_uniform("model", mesh_transform);
+            shader->set_uniform("color", mesh.get_base_color());
 
             bind_mesh_textures(model->get_textures(), mesh.get_used_textures());
             glBindVertexArray(mesh.get_vertex_array_id());
@@ -57,45 +96,48 @@ void Render::render_scene()
             glBindVertexArray(0);
         }
     }
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 }
 
 
-void Render::set_light(const Light& light)
+void Render::set_light(const Light& new_light)
 {
-    Render::light = light;
+    light = new_light;
+    shader->set_uniform("light.position", light.position);
+    shader->set_uniform("light.color", light.color);
 }
 
-void Render::set_camera(const Camera camera)
-{
-    glm::mat4 view = glm::lookAt(camera.position, camera.target, glm::vec3(0.0, 1.0, 0.0));
-    this->view = view;
-
-    float aspect = (float)camera.window_size.width / (float)camera.window_size.height;
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
-    this->projection = projection;
+void Render::set_camera(const Camera &cam) {
+    camera = cam;
+    update_projection_matricies();
 }
 
-glm::mat4 *Render::get_transform_matrix(unsigned int model_id, std::string mesh_name)
+void Render::update_projection_matricies()
 {
-    if (mesh_name == "") {
-        return &(models[model_id]->transformation);
-    }
+    float aspect_ratio = (float)window_size.width / (float)window_size.height;
+    view = glm::lookAt(camera.position, camera.target, glm::vec3(0.0, 1.0, 0.0));
+    projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
 
-    for (auto &mesh : models[model_id]->get_meshes()) {
-        if (mesh.get_name() == mesh_name) {
-            return const_cast<glm::mat4*>(&(mesh.transformation));
-        }
-    }
-    return nullptr;
+    shader->set_uniform("view", view);
+    shader->set_uniform("projection", projection);
 }
 
+void Render::set_camera_target(const glm::vec3 &target) {
+    camera.target = target;
+    update_projection_matricies();
+}
 
-std::unique_ptr<Render> Render::make_default_render()
-{
-    std::unique_ptr<Render> render = std::make_unique<Render>();
-    render->set_camera(Camera(glm::vec3(2.0, 1.5, 0.0), glm::vec3(0.0, 0.85, 0.0), WindowSize(800, 600)));
-    Light light(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    render->set_light(light);
+void Render::set_camera_position(const glm::vec3 &position) {
+    camera.position = position;
+    update_projection_matricies();
+}
 
-    return std::move(render);
+void Render::set_model_transformation(unsigned int model_id, glm::mat4 transformation) {
+    models[model_id]->transformation = transformation;
+}
+
+void Render::set_mesh_transformation(unsigned int model_id, unsigned int mesh_id, const glm::mat4 &transformation) {
+    models[model_id]->set_mesh_transformation(mesh_id, transformation);
 }

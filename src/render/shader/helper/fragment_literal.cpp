@@ -23,7 +23,9 @@ const char* fragment_literal =
 "	vec3  norm = normalize(normal);\n"
 "    vec3  light_dir = normalize(light.position - fragment_pos);\n"
 "    float angle = max(dot(norm, light_dir), 0.0);\n"
+
 "    vec3  diffuse = light.color * angle * color;\n"
+"    // vec3  diffuse = light.color * angle * color + vec3(0.2, 0.2, 0.2) * color;\n"
 "    // vec3  diffuse = light.color * angle * texture(texture_diffuse1, texture_coord).rgb;\n"
 
 "    Frag_color = vec4(diffuse, 1.0);\n"
