@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     unsigned int head = render->add_model("../resources/puppets/cartoon/head.obj", normalization);
 
 
-    CamResolution cam_res(640, 480);
+    CamResolution cam_res(1280, 720);
     std::unique_ptr<InputSource> webcam = std::make_unique<WebCamera>();
     std::unique_ptr<FaceDetector> face_detector = std::make_unique<FaceDetectorHarr>("../resources/face_detection/haarcascade_frontalface_alt.xml");
     std::unique_ptr<LandmarkDetector> landmark_detector = std::make_unique<LandmarkDetectorDlib>("../resources/face_detection/shape_predictor_68_face_landmarks.dat");
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     std::array<cv::Point, 68> face_landmarks;
     std::array<float,3> face_rotation = {0, 0, 0};
 
-    webcam->open_stream(0);
+    webcam->open_stream(0, cam_res);
     while (true)
     {
         cv::Mat image = webcam->get_image();
@@ -50,16 +50,22 @@ int main(int argc, char* argv[])
             face_landmarks = landmark_detector->detect_landmarks(image, tracked_face);
             face_rotation = feature_detector.detect_face_direction(face_landmarks);
 
+            cv::cvtColor(image, image, CV_BGR2GRAY);
+            cv::cvtColor(image, image, CV_GRAY2BGR);
+
             cv::rectangle(image, tracked_face, cv::Scalar(0, 0, 255));
             for (auto mark : face_landmarks) {
                 cv::circle(image, cv::Point(mark.x, mark.y), 1, cv::Scalar(0,0,0), -1);
             }
+        } else {
+            cv::cvtColor(image, image, CV_BGR2GRAY);
         }
 
         cv::imshow("WebCam output", image);
 
         int keycode = cv::waitKey(30);
-        if (keycode == 27)
+        // if (keycode == 27)
+        if (keycode > 0)
             break;
 
         glm::mat4 rotation_matrix(1.0);
