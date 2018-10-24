@@ -47,28 +47,29 @@ cv::Mat FeatureDetector::calculate_camera_matrix(CamResolution camera_resolution
     return (cv::Mat_<double>(3, 3) << focal_length, 0, center.x, 0, focal_length, center.y, 0, 0, 1);
 }
 
-
 std::array<float,3> rotvec_to_eulers(cv::Mat rotation_vector)
 {
-    cv::Mat tmp_rotation_matrix;
-    cv::Rodrigues(rotation_vector, tmp_rotation_matrix);
+    cv::Mat rot_mat;
+    cv::Rodrigues(rotation_vector, rot_mat);
 
-    double rmat[3][3];
-    for (int row=0; row<3; row++)
-        for (int col=0; col<3; col++)
-            rmat[row][col] = tmp_rotation_matrix.at<double>(row, col);
+    double x, y, z;
+    double sy = sqrt(rot_mat.at<double>(0,0) * rot_mat.at<double>(0,0) +  rot_mat.at<double>(1,0) * rot_mat.at<double>(1,0) );
 
-    float angle = acos((rmat[0][0] + rmat[1][1] + rmat[2][2] - 1) / 2);
+    bool singular = sy < 1e-6;
 
-    double d1 = rmat[2][1]-rmat[1][2];
-    double d2 = rmat[0][2]-rmat[2][0];
-    double d3 = rmat[1][0]-rmat[0][1];
-    double denominator = (float)sqrt(d1*d1 + d2*d2 + d3*d3);
-
-    float x = d1 / denominator;
-    float y = d2 / denominator;
-    float z = d3 / denominator;
-    std::array<float,3> arr = { angle*x, angle*y, angle*z };
+    if (!singular)
+    {
+        x = atan2(rot_mat.at<double>(2,1) , rot_mat.at<double>(2,2));
+        y = atan2(-rot_mat.at<double>(2,0), sy);
+        z = atan2(rot_mat.at<double>(1,0), rot_mat.at<double>(0,0));
+    }
+    else
+    {
+        x = atan2(-rot_mat.at<double>(1,2), rot_mat.at<double>(1,1));
+        y = atan2(-rot_mat.at<double>(2,0), sy);
+        z = 0;
+    }
+    std::array<float,3> arr = {(float)x, (float)y, (float)z};
 
     return arr;
 }
